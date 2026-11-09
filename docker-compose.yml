@@ -4,11 +4,14 @@ name: godswar
 services:
   postgres:
     image: postgres:17-alpine
+    container_name: godswar-postgres
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    volumes: ["godswar-postgres-data:/var/lib/postgresql/data"]
+      POSTGRES_USER: ${POSTGRES_USER:-godswar}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-letmein12}
+    ports:
+      - "${GODSWAR_POSTGRES_HOST_BIND_ADDRESS:-0.0.0.0}:${POSTGRES_PORT:-5432}:5432"
+    volumes: ["godswar-postgres-data:/var/lib/docker/volumes/godswar_godswar-postgres-data/_data"]
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
